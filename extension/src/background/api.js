@@ -1,4 +1,3 @@
-import { cacheGet, cacheSet, CACHE_DATA_TTL_MS, CACHE_META_TTL_MS } from "./cache.js";
 import { log } from "./log.js";
 
 export const PROBE_API_VERSIONS = [65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45].map((n) => n.toFixed(1));
@@ -124,10 +123,6 @@ async function probeOk(origin, path, token) {
 }
 
 export async function getLatestApiVersion(api) {
-  const cacheKey = "meta:" + api.baseUrl + ":versions";
-  const cached = await cacheGet(cacheKey);
-  if (cached) return cached;
-
   const versions = await fetchJson(api, "/services/data/");
   if (!Array.isArray(versions) || versions.length === 0) {
     throw new Error("Versions API Salesforce indisponibles.");
@@ -135,7 +130,6 @@ export async function getLatestApiVersion(api) {
   const latest = versions[versions.length - 1];
   const value = String(latest.version || "").trim();
   if (!value) throw new Error("Impossible de déterminer la version API.");
-  await cacheSet(cacheKey, value, CACHE_META_TTL_MS);
   return value;
 }
 
@@ -168,25 +162,6 @@ export async function queryAll(api, apiVersion, soql, maxRecords) {
 async function fetchJson(api, path) {
   const url = api.baseUrl + path;
 
-  const cacheable =
-    path.includes("/sobjects") ||
-    path.endsWith("/describe") ||
-    path.startsWith("/services/data/") ||
-    path.includes("/query?");
-
-  const ttl = (path.includes("/sobjects") || path.endsWith("/describe") || path.startsWith("/services/data/"))
-    ? CACHE_META_TTL_MS
-    : CACHE_DATA_TTL_MS;
-
-  const cacheKey = cacheable
-    ? ("get:" + api.baseUrl + ":v" + (api.apiVersion || "") + ":bearer:" + path)
-    : null;
-
-  if (cacheKey) {
-    const cached = await cacheGet(cacheKey);
-    if (cached) return cached;
-  }
-
   const response = await fetch(url, {
     method: "GET",
     redirect: "follow",
@@ -214,9 +189,6 @@ async function fetchJson(api, path) {
   }
 
   const json = await response.json();
-  if (cacheKey) {
-    await cacheSet(cacheKey, json, ttl);
-  }
   return json;
 }
 

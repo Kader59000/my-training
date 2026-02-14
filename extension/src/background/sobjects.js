@@ -1,12 +1,7 @@
-import { cacheGet, cacheSet, CACHE_META_TTL_MS } from "./cache.js";
 import { sfRequest } from "./api.js";
 import { isConfigObjectName } from "../shared/objectFilter.js";
 
 export async function listBusinessSObjects(api, apiVersion) {
-  const cacheKey = "meta:" + api.baseUrl + ":sobjects:" + apiVersion;
-  const cached = await cacheGet(cacheKey);
-  if (cached) return cached;
-
   const res = await sfRequest(api, apiVersion, "/sobjects");
   const raw = Array.isArray(res?.sobjects) ? res.sobjects : [];
 
@@ -20,7 +15,5 @@ export async function listBusinessSObjects(api, apiVersion) {
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
-  await cacheSet(cacheKey, filtered, CACHE_META_TTL_MS);
   return filtered;
 }
-

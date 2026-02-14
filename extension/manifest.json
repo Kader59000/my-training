@@ -3,7 +3,7 @@
   "name": "Salesforce Record Explorer",
   "version": "0.1.0",
   "description": "Explore les relations métier autour du record Salesforce courant.",
-  "permissions": ["tabs", "cookies", "activeTab", "scripting", "storage"],
+  "permissions": ["tabs", "cookies", "activeTab", "scripting"],
   "host_permissions": [
     "*://*.salesforce.com/*",
     "*://*.force.com/*"
