@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Salesforce Record Explorer</title>
+    <link rel="stylesheet" href="popup/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <h1>Record Explorer</h1>
+        <div class="actions">
+          <button id="refreshBtn" type="button">Analyser</button>
+          <button id="clearLogsBtn" type="button" class="ghost">Clear logs</button>
+        </div>
+      </header>
+      <p id="status" class="status">Initialisation…</p>
+      <p id="sessionInfo" class="session"></p>
+      <section class="graph">
+        <div class="graph-head">
+          <div class="legend">
+            <div id="trackedPills" class="tracked"></div>
+            <button id="addObjectBtn" type="button" class="icon-btn" title="Ajouter un objet">+</button>
+          </div>
+          <div class="hint">Glisser pour déplacer, molette pour zoomer.</div>
+        </div>
+        <div id="objectSearch" class="object-search hidden">
+          <input id="objectSearchInput" type="text" placeholder="Rechercher un objet…" autocomplete="off" />
+          <div id="objectSearchResults" class="object-results"></div>
+        </div>
+        <canvas id="graphCanvas" class="graph-canvas"></canvas>
+      </section>
+      <section class="logs">
+        <header class="logs-head">
+          <h2>Logs</h2>
+          <button id="copyLogsBtn" type="button" class="ghost">Copier</button>
+        </header>
+        <pre id="logsBox" class="logs-box"></pre>
+      </section>
+    </main>
+    <script src="popup/index.js" type="module"></script>
+  </body>
+</html>

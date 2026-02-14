@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Salesforce Record Explorer",
+  "version": "0.1.0",
+  "description": "Explore les relations métier autour du record Salesforce courant.",
+  "permissions": ["tabs", "cookies", "activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "*://*.salesforce.com/*",
+    "*://*.force.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Salesforce Record Explorer"
+  }
+}
