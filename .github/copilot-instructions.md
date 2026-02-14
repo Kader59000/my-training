@@ -192,9 +192,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
     })();
     return true; // Keep channel open for async response
+  } else if (message.action === 'getImmediateValue') {
+    // For sync responses, no need to return true
+    sendResponse({ data: 'immediate value' });
   }
-  // For sync responses, no need to return true
-  sendResponse({ data: 'immediate value' });
 });
 ```
 
