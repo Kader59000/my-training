@@ -169,17 +169,32 @@ const result = await chrome.storage.local.get('key');
 
 ### Message Passing
 ```javascript
-// Send message
-chrome.runtime.sendMessage({ action: 'getData' }, (response) => {
-  // Handle response
-});
+// Send message (async/await pattern)
+async function sendMessageExample() {
+  try {
+    const response = await chrome.runtime.sendMessage({ action: 'getData' });
+    console.log('Received:', response.data);
+  } catch (error) {
+    console.error('Message failed:', error);
+  }
+}
 
-// Receive message
+// Receive message (async handler)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'getData') {
-    sendResponse({ data: 'value' });
+    // For async operations, return true and use Promise
+    (async () => {
+      try {
+        const data = await fetchDataAsync();
+        sendResponse({ data });
+      } catch (error) {
+        sendResponse({ error: error.message });
+      }
+    })();
+    return true; // Keep channel open for async response
   }
-  return true; // Keep channel open for async response
+  // For sync responses, no need to return true
+  sendResponse({ data: 'immediate value' });
 });
 ```
 
